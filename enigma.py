@@ -1,30 +1,38 @@
 """ 
 M3 Enigma Wheels -- http://www.cryptomuseum.com/crypto/enigma/m3/index.htm:
 Wheel	ABCDEFGHIJKLMNOPQRSTUVWXYZ	Notch(es)	Turnover
-ETW	    ABCDEFGHIJKLMNOPQRSTUVWXYZ	 	 	 
 I	    EKMFLGDQVZNTOWYHXUSPAIBRCJ	Y	        Q
 II	    AJDKSIRUXBLHWTMCQGZNPYFVOE	M	        E
 III	    BDFHJLCPRTXVZNYEIWGAKMUSQO	D	        V
 IV	    ESOVPZJAYQUIRHXLNFTGKDCMWB	R	        J
 V   	VZBRGITYUPSDNHLXAWMJQOFECK	H	        Z
--- naval only here down ---
+-- naval only here down --
 VI	    JPGVOUMFYQBENHZRDKASXLICTW	HU	        ZM
 VII	    NZJHGRCXMYSWBOUFAIVLPEKQDT	HU  	    ZM
 VIII	FKQHTLXOCBJSPDZRAMEWNIUYGV	HU	        ZM
+-- reflectors --
+UKW-A   EJMZALYXVBWFCRQUONTSPIKHGD
 UKW-B	YRUHQSLDPXNGOKMIEBFZCWVJAT	 	 	 
 UKW-C	FVPJIAOYEDRZXWGCTKUQSBNMHL	 	 	 
 """
+import warnings
+import sys
+
 rotors = ['EKMFLGDQVZNTOWYHXUSPAIBRCJ','AJDKSIRUXBLHWTMCQGZNPYFVOE','BDFHJLCPRTXVZNYEIWGAKMUSQO','ESOVPZJAYQUIRHXLNFTGKDCMWB','VZBRGITYUPSDNHLXAWMJQOFECK']
-reflectors = {"B":'YRUHQSLDPXNGOKMIEBFZCWVJAT', "C":'FVPJIAOYEDRZXWGCTKUQSBNMHL'}
+reflectors = {'A':'EJMZALYXVBWFCRQUONTSPIKHGD', 'B':'YRUHQSLDPXNGOKMIEBFZCWVJAT', 'C':'FVPJIAOYEDRZXWGCTKUQSBNMHL'}
 rotorPositions = [1, 1, 1]  # define initial positions of rotors
-rotorStack = [4, 3, 1]      # define initial rotors to use in the stack
+rotorStack = [1, 2, 3]      # define initial rotors to use in the stack
+if (len(rotorPositions) != len(rotorStack)): sys.exit(1)
 
 def incrementRotor():
-    """Routine to increment the rotorPositions[] array
+    """Routine to increment the global rotorPositions[] list
     """
-    rotorCount = len(rotorPositions)-1
+    rotorCount = len(rotorPositions) - 1
     rotorPositions[rotorCount] += 1
-    # TODO: Make rotors increment if necessary.
+    for counter in range(rotorCount, -1, -1):
+        if (rotorPositions[counter] > 26):
+            if (counter != 0): rotorPositions[counter - 1] += 1
+            rotorPositions[counter] = 1
 
 def rotorReturn(input='A',rotor=1, rotorPos=3):
     """Run a character through a single rotor
@@ -36,7 +44,7 @@ def rotorReturn(input='A',rotor=1, rotorPos=3):
     """
     if (rotorPos > len(rotorStack)):
         rotorPos = len(rotorStack)
-        print("Resetting rotor position to "+str(rotorPos))
+        warnings.warn("Resetting rotor position to "+str(rotorPos))
     if (rotor > len(rotors)): return  # return nothing if we're higher than a valid rotor
     offset = ord('A')
     #print("Sending " + input.upper() + " to rotor " + str(rotor) + " in position " + str(rotorPos))
@@ -44,14 +52,14 @@ def rotorReturn(input='A',rotor=1, rotorPos=3):
 
 def reflectorReturn(input,reflector='B'):
     """Run a character through the reflector.
-
+  
     Keyword arguments:
     input -- character to pass through the reflector
     reflector - Which UKW version of reflector (valid: B or C, default B)
     """
-    if (reflector.upper() not in ["B","C"]):
+    if (reflector.upper() not in ['A', 'B', 'C']):
         reflector = "B"
-        print("Resetting reflector to valid choice")
+        warnings.warn("Resetting reflector to valid choice")
     offset = ord('A')
     output = reflectors[reflector][ord(input.upper())-offset]
     #print("Reflector "+reflector+" received "+input+", reflector returned "+output)
@@ -64,6 +72,7 @@ def encipherStack(rotorStack=[1,2,3], input='A'):
     rotorStack -- list[] of rotors (left-to-right) to run the input through. Actual Engimas supported 3 or 4 rotors, this supports an infinite length list.
     input -- character to pass through the stack
     """
+    incrementRotor()    # incrementing rotor positions happens immediately upon input on the Enigma
     rotorStack.reverse()
     """ reverse() it so you go right-to-left; Enigma signals start on right side of machine """
     counter = len(rotorStack)   # track which rotor we're operating on at the moment
@@ -77,12 +86,10 @@ def encipherStack(rotorStack=[1,2,3], input='A'):
         """ reverse() it again to bring it back left-to-right """
         input = rotorReturn(input, f, counter)
         counter += 1
-    incrementRotor()
-    print(rotorPositions)
     return(input)
 
-
-for c in range(65, 91):
-    print("Sending "+chr(c)+" to Enigma. Output is "+encipherStack(rotorStack, chr(c)))
+for c in ['A','F']:
+    print("Sending " + c + " to Enigma. Output is " + encipherStack(rotorStack, c))
+# BUG: If A leads to F, then F should lead to P. It's not. Solve this prior to diving further into rotor incrementing.
         
 
