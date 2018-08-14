@@ -1,5 +1,5 @@
 # Enigma
-I'm learning Python, so might as well write an Enigma machine in Python.
+I've started [3D Printing an Enigma M3 machine](http://www.marius.org/tag/enigma), and now I've decided to try and learn Python, so might as well write an Enigma machine in Python.
 
 Go easy on me. Feedback on poor Python habits helpful. Making fun of poor Python habits not helpful.
 
