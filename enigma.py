@@ -22,7 +22,6 @@ rotorStack = [4, 3, 1]      # define initial rotors to use in the stack
 def incrementRotor():
     """Routine to increment the rotorPositions[] array
     """
-    startPosition = rotorPositions
     rotorCount = len(rotorPositions)-1
     rotorPositions[rotorCount] += 1
     # TODO: Make rotors increment if necessary.
