@@ -1,9 +1,11 @@
 # Enigma
+
 I've started [3D Printing an Enigma M3 machine](http://www.marius.org/tag/enigma), and now I've decided to try and learn Python, so might as well write an Enigma machine in Python.
 
 Go easy on me. Feedback on poor Python habits helpful. Making fun of poor Python habits not helpful.
 
 ## Goals
+
 - [x] Emulation of M3 Enigma machine with authentic rotor behavior
 - [ ] Rotors rotate at correct spots
 - [x] Configure *Walzenlage*
@@ -14,7 +16,6 @@ Go easy on me. Feedback on poor Python habits helpful. Making fun of poor Python
   - [ ] Allow user configuration of *steckerverbindungen*
 
 ## References
-* [Enigma Set Up and Operation](http://www.ellsbury.com/enigma3.htm)
-* [Enigma Family Tree](http://www.cryptomuseum.com/crypto/enigma/tree.htm)
 
-
+- [Enigma Set Up and Operation](http://www.ellsbury.com/enigma3.htm)
+- [Enigma Family Tree](http://www.cryptomuseum.com/crypto/enigma/tree.htm)
